@@ -233,15 +233,15 @@
         .password-strength-bar {
             height: 100%;
             width: 0%;
-            background: #3b82f6;
             transition: all 0.3s ease;
+            background: #ef4444;
         }
 
         .checkbox-group {
             display: flex;
             align-items: center;
-            margin-bottom: 25px;
             gap: 10px;
+            margin-bottom: 25px;
         }
 
         .checkbox-group input[type="checkbox"] {
@@ -255,20 +255,16 @@
             color: #8b92a7;
             font-size: 14px;
             cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .checkbox-group:hover label {
-            color: #e4e6eb;
+            user-select: none;
         }
 
         .submit-btn {
             width: 100%;
             padding: 14px;
-            background: #3b82f6;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             border: none;
             border-radius: 6px;
-            color: #ffffff;
+            color: white;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
@@ -276,8 +272,9 @@
         }
 
         .submit-btn:hover {
-            background: #2563eb;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
         }
 
         .submit-btn:active {
@@ -285,9 +282,9 @@
         }
 
         .divider {
-            display: flex;
-            align-items: center;
-            margin: 25px 0;
+            text-align: center;
+            position: relative;
+            margin: 30px 0;
             color: #5a6175;
             font-size: 13px;
         }
@@ -295,24 +292,26 @@
         .divider::before,
         .divider::after {
             content: '';
-            flex: 1;
+            position: absolute;
+            top: 50%;
+            width: 40%;
             height: 1px;
             background: #2d3548;
         }
 
         .divider::before {
-            margin-right: 15px;
+            left: 0;
         }
 
         .divider::after {
-            margin-left: 15px;
+            right: 0;
         }
 
         .social-login {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .social-btn {
@@ -367,6 +366,28 @@
             text-decoration: underline;
         }
 
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
         @media (max-width: 1024px) {
             .left-panel {
                 display: none;
@@ -404,6 +425,8 @@
                 </div>
 
                 <div id="loginForm" class="form-container active">
+                    <div class="error-message" id="loginError"></div>
+                    <div class="success-message" id="loginSuccess"></div>
                     <form onsubmit="handleLogin(event)">
                         <div class="social-login">
                             <button type="button" class="social-btn">
@@ -436,6 +459,8 @@
                 </div>
 
                 <div id="signupForm" class="form-container">
+                    <div class="error-message" id="signupError"></div>
+                    <div class="success-message" id="signupSuccess"></div>
                     <form onsubmit="handleSignup(event)">
                         <div class="social-login">
                             <button type="button" class="social-btn">
@@ -505,11 +530,13 @@
     </div>
 
     <script>
+        // Tab switching functions
         function showLogin() {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab')[0].classList.add('active');
             document.getElementById('loginForm').classList.add('active');
             document.getElementById('signupForm').classList.remove('active');
+            clearMessages();
         }
 
         function showSignup() {
@@ -517,8 +544,32 @@
             document.querySelectorAll('.tab')[1].classList.add('active');
             document.getElementById('signupForm').classList.add('active');
             document.getElementById('loginForm').classList.remove('active');
+            clearMessages();
         }
 
+        function clearMessages() {
+            document.querySelectorAll('.error-message, .success-message').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+        }
+
+        function showError(elementId, message) {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.style.display = 'block';
+            setTimeout(() => {
+                el.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(elementId, message) {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.style.display = 'block';
+        }
+
+        // Password strength checker
         function checkPasswordStrength(password) {
             const bar = document.getElementById('strengthBar');
             let strength = 0;
@@ -532,21 +583,130 @@
             else bar.style.background = '#10b981';
         }
 
+        // Login handler
         function handleLogin(e) {
             e.preventDefault();
-            window.location.href = 'dashboard.html';
+            clearMessages();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const remember = document.getElementById('remember').checked;
+
+            // Get stored users
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            // Find user
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                // Store current user session
+                const session = {
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    company: user.company,
+                    role: user.role,
+                    loginTime: new Date().toISOString(),
+                    remember: remember
+                };
+                
+                localStorage.setItem('currentUser', JSON.stringify(session));
+                
+                showSuccess('loginSuccess', 'Login successful! Redirecting...');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } else {
+                showError('loginError', 'Invalid email or password. Please try again.');
+            }
         }
 
+        // Signup handler
         function handleSignup(e) {
             e.preventDefault();
+            clearMessages();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('signupEmail').value;
+            const company = document.getElementById('company').value;
+            const role = document.getElementById('role').value;
             const password = document.getElementById('signupPassword').value;
             const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const terms = document.getElementById('terms').checked;
+
+            // Validation
             if (password !== confirmPassword) {
-                alert('Passwords do not match');
+                showError('signupError', 'Passwords do not match');
                 return;
             }
-            window.location.href = 'dashboard.html';
+
+            if (password.length < 8) {
+                showError('signupError', 'Password must be at least 8 characters long');
+                return;
+            }
+
+            if (!terms) {
+                showError('signupError', 'You must agree to the Terms of Service');
+                return;
+            }
+
+            // Get existing users
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            // Check if user already exists
+            if (users.find(u => u.email === email)) {
+                showError('signupError', 'An account with this email already exists');
+                return;
+            }
+
+            // Add new user
+            users.push({
+                firstName,
+                lastName,
+                email,
+                company,
+                role,
+                password,
+                createdAt: new Date().toISOString()
+            });
+
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Auto login
+            const session = {
+                email,
+                firstName,
+                lastName,
+                company,
+                role,
+                loginTime: new Date().toISOString(),
+                remember: false
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(session));
+            
+            showSuccess('signupSuccess', 'Account created successfully! Redirecting...');
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1000);
         }
+
+        // Check if user is already logged in
+        window.addEventListener('load', () => {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const session = JSON.parse(currentUser);
+                const loginTime = new Date(session.loginTime);
+                const now = new Date();
+                const daysSinceLogin = (now - loginTime) / (1000 * 60 * 60 * 24);
+
+                // If remember me is checked or logged in within last day, redirect to dashboard
+                if (session.remember || daysSinceLogin < 1) {
+                    window.location.href = 'dashboard.html';
+                }
+            }
+        });
     </script>
 </body>
 </html>
