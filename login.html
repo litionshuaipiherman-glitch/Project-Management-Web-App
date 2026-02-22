@@ -1,712 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon_atoms.ico" type="image/x-icon">
-    <title>Login - Project Management</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
-            background: #0a0e27;
-            min-height: 100vh;
-            display: flex;
-            color: #e4e6eb;
-        }
-
-        .split-container {
-            display: flex;
-            width: 100%;
-            min-height: 100vh;
-        }
-
-        .left-panel {
-            flex: 1;
-            background: linear-gradient(135deg, #1a1f3a 0%, #0a0e27 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 60px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .left-panel::before {
-            content: '';
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
-            top: -200px;
-            right: -200px;
-        }
-
-        .brand-section {
-            position: relative;
-            z-index: 1;
-        }
-
-        .logo {
-            font-size: 42px;
-            font-weight: 700;
-            color: #3b82f6;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-        }
-
-        .tagline {
-            font-size: 18px;
-            color: #8b92a7;
-            line-height: 1.6;
-            max-width: 400px;
-        }
-
-        .features-list {
-            margin-top: 50px;
-            list-style: none;
-        }
-
-        .features-list li {
-            padding: 15px 0;
-            color: #8b92a7;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.2s ease;
-        }
-
-        .features-list li:hover {
-            color: #e4e6eb;
-            transform: translateX(5px);
-        }
-
-        .features-list li::before {
-            content: '✓';
-            color: #3b82f6;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .right-panel {
-            flex: 1;
-            background: #0f1629;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 60px;
-        }
-
-        .form-wrapper {
-            width: 100%;
-            max-width: 440px;
-        }
-
-        .form-header {
-            margin-bottom: 40px;
-        }
-
-        .form-header h2 {
-            font-size: 28px;
-            font-weight: 600;
-            color: #e4e6eb;
-            margin-bottom: 8px;
-        }
-
-        .form-header p {
-            color: #8b92a7;
-            font-size: 15px;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 35px;
-            background: #1a1f3a;
-            padding: 4px;
-            border-radius: 8px;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 12px 20px;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            font-size: 14px;
-            color: #8b92a7;
-        }
-
-        .tab:hover {
-            background: #252d47;
-            color: #e4e6eb;
-        }
-
-        .tab.active {
-            background: #3b82f6;
-            color: #ffffff;
-        }
-
-        .form-container {
-            display: none;
-        }
-
-        .form-container.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #e4e6eb;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 12px 16px;
-            background: #1a1f3a;
-            border: 1px solid #2d3548;
-            border-radius: 6px;
-            color: #e4e6eb;
-            font-size: 14px;
-            transition: all 0.2s ease;
-            outline: none;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #3b82f6;
-            background: #1f2537;
-        }
-
-        .form-group input:hover,
-        .form-group select:hover {
-            border-color: #3d4556;
-        }
-
-        .form-group input::placeholder {
-            color: #5a6175;
-        }
-
-        .password-strength {
-            margin-top: 8px;
-            height: 3px;
-            background: #1a1f3a;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .password-strength-bar {
-            height: 100%;
-            width: 0%;
-            transition: all 0.3s ease;
-            background: #ef4444;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #3b82f6;
-        }
-
-        .checkbox-group label {
-            color: #8b92a7;
-            font-size: 14px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .submit-btn:hover {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-        }
-
-        .submit-btn:active {
-            transform: translateY(0);
-        }
-
-        .divider {
-            text-align: center;
-            position: relative;
-            margin: 30px 0;
-            color: #5a6175;
-            font-size: 13px;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 40%;
-            height: 1px;
-            background: #2d3548;
-        }
-
-        .divider::before {
-            left: 0;
-        }
-
-        .divider::after {
-            right: 0;
-        }
-
-        .social-login {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 30px;
-        }
-
-        .social-btn {
-            padding: 12px;
-            background: #1a1f3a;
-            border: 1px solid #2d3548;
-            border-radius: 6px;
-            color: #e4e6eb;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .social-btn:hover {
-            background: #252d47;
-            border-color: #3d4556;
-        }
-
-        .forgot-password {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .forgot-password a {
-            color: #3b82f6;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.2s ease;
-        }
-
-        .forgot-password a:hover {
-            color: #2563eb;
-        }
-
-        .terms-text {
-            font-size: 13px;
-            color: #5a6175;
-            line-height: 1.5;
-            margin-top: 20px;
-        }
-
-        .terms-text a {
-            color: #3b82f6;
-            text-decoration: none;
-        }
-
-        .terms-text a:hover {
-            text-decoration: underline;
-        }
-
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #ef4444;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none;
-        }
-
-        .success-message {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #10b981;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none;
-        }
-
-        @media (max-width: 1024px) {
-            .left-panel {
-                display: none;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProjectHub — Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="login.css">
 </head>
 <body>
-    <div class="split-container">
-        <div class="left-panel">
-            <div class="brand-section">
-                <div class="logo">ProjectHub</div>
-                <p class="tagline">Enterprise-grade project management platform designed for modern teams</p>
-                
-                <ul class="features-list">
-                    <li>Advanced task tracking and workflow automation</li>
-                    <li>Real-time collaboration and communication</li>
-                    <li>Comprehensive analytics and reporting</li>
-                    <li>Enterprise-level security and compliance</li>
-                    <li>Seamless integration with your tools</li>
-                </ul>
-            </div>
+  <div class="bg-layer">
+    <div class="bg-orb3"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <div class="particles" id="particles"></div>
+
+  <div class="split">
+    <!-- Left -->
+    <div class="left">
+      <div class="brand">
+        <div class="brand-icon">P</div>
+        <div class="brand-name">ProjectHub</div>
+      </div>
+
+      <h1 class="hero-headline">Ship projects<br>at <span>warp speed</span></h1>
+
+      <p class="hero-sub">The modern project management platform built for teams who move fast and deliver excellence.</p>
+
+      <div class="features">
+        <div class="feature-item">
+          <div class="feature-icon blue">⚡</div>
+          <div class="feature-text">
+            <strong>Real-time collaboration</strong>
+            <span>Work together seamlessly, anywhere in the world</span>
+          </div>
         </div>
-
-        <div class="right-panel">
-            <div class="form-wrapper">
-                <div class="form-header">
-                    <h2>Welcome back</h2>
-                    <p>Sign in to continue to your workspace</p>
-                </div>
-
-                <div class="tabs">
-                    <div class="tab active" onclick="showLogin()">Sign In</div>
-                    <div class="tab" onclick="showSignup()">Create Account</div>
-                </div>
-
-                <div id="loginForm" class="form-container active">
-                    <div class="error-message" id="loginError"></div>
-                    <div class="success-message" id="loginSuccess"></div>
-                    <form onsubmit="handleLogin(event)">
-                        <div class="social-login">
-                            <button type="button" class="social-btn">
-                                <span>Google</span>
-                            </button>
-                            <button type="button" class="social-btn">
-                                <span>Microsoft</span>
-                            </button>
-                        </div>
-
-                        <div class="divider">or continue with email</div>
-
-                        <div class="form-group">
-                            <label for="loginEmail">Email address</label>
-                            <input type="email" id="loginEmail" placeholder="name@company.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="loginPassword">Password</label>
-                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="remember">
-                            <label for="remember">Keep me signed in for 30 days</label>
-                        </div>
-                        <button type="submit" class="submit-btn">Sign In</button>
-                        <div class="forgot-password">
-                            <a href="#">Forgot your password?</a>
-                        </div>
-                    </form>
-                </div>
-
-                <div id="signupForm" class="form-container">
-                    <div class="error-message" id="signupError"></div>
-                    <div class="success-message" id="signupSuccess"></div>
-                    <form onsubmit="handleSignup(event)">
-                        <div class="social-login">
-                            <button type="button" class="social-btn">
-                                <span>Google</span>
-                            </button>
-                            <button type="button" class="social-btn">
-                                <span>Microsoft</span>
-                            </button>
-                        </div>
-
-                        <div class="divider">or sign up with email</div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="firstName">First name</label>
-                                <input type="text" id="firstName" placeholder="John" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="lastName">Last name</label>
-                                <input type="text" id="lastName" placeholder="Doe" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="signupEmail">Work email</label>
-                            <input type="email" id="signupEmail" placeholder="name@company.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="company">Company name</label>
-                            <input type="text" id="company" placeholder="Your company" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="role">Your role</label>
-                            <select id="role" required>
-                                <option value="">Select your role</option>
-                                <option value="manager">Project Manager</option>
-                                <option value="developer">Developer</option>
-                                <option value="designer">Designer</option>
-                                <option value="analyst">Business Analyst</option>
-                                <option value="executive">Executive</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="signupPassword">Password</label>
-                            <input type="password" id="signupPassword" placeholder="Create a strong password" required oninput="checkPasswordStrength(this.value)">
-                            <div class="password-strength">
-                                <div class="password-strength-bar" id="strengthBar"></div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="signupConfirmPassword">Confirm password</label>
-                            <input type="password" id="signupConfirmPassword" placeholder="Re-enter your password" required>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="terms" required>
-                            <label for="terms">I agree to the Terms of Service and Privacy Policy</label>
-                        </div>
-                        <button type="submit" class="submit-btn">Create Account</button>
-                        <p class="terms-text">
-                            By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. 
-                            We'll occasionally send you account-related emails.
-                        </p>
-                    </form>
-                </div>
-            </div>
+        <div class="feature-item">
+          <div class="feature-icon purple">📊</div>
+          <div class="feature-text">
+            <strong>Deep analytics</strong>
+            <span>Understand your team's velocity and bottlenecks</span>
+          </div>
         </div>
+        <div class="feature-item">
+          <div class="feature-icon teal">🔐</div>
+          <div class="feature-text">
+            <strong>Enterprise security</strong>
+            <span>SOC 2 compliant with end-to-end encryption</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon orange">🔗</div>
+          <div class="feature-text">
+            <strong>100+ integrations</strong>
+            <span>Connects with your existing toolchain</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-num">50k+</div>
+          <div class="stat-label">Teams worldwide</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">2M+</div>
+          <div class="stat-label">Projects shipped</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">99.9%</div>
+          <div class="stat-label">Uptime SLA</div>
+        </div>
+      </div>
     </div>
 
-    <script>
-        // Tab switching functions
-        function showLogin() {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab')[0].classList.add('active');
-            document.getElementById('loginForm').classList.add('active');
-            document.getElementById('signupForm').classList.remove('active');
-            clearMessages();
-        }
+    <!-- Right -->
+    <div class="right">
+      <div class="form-box">
+        <div class="form-title">Welcome back</div>
+        <div class="form-sub">Sign in to your workspace to continue</div>
 
-        function showSignup() {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab')[1].classList.add('active');
-            document.getElementById('signupForm').classList.add('active');
-            document.getElementById('loginForm').classList.remove('active');
-            clearMessages();
-        }
+        <div class="tabs">
+          <div class="tab active" onclick="showTab('login')">Sign In</div>
+          <div class="tab" onclick="showTab('signup')">Create Account</div>
+        </div>
 
-        function clearMessages() {
-            document.querySelectorAll('.error-message, .success-message').forEach(el => {
-                el.style.display = 'none';
-                el.textContent = '';
-            });
-        }
+        <!-- Login -->
+        <div id="loginPanel" class="form-panel active">
+          <div class="alert error" id="loginErr"></div>
+          <div class="alert success" id="loginOk"></div>
 
-        function showError(elementId, message) {
-            const el = document.getElementById(elementId);
-            el.textContent = message;
-            el.style.display = 'block';
-            setTimeout(() => {
-                el.style.display = 'none';
-            }, 5000);
-        }
+          
 
-        function showSuccess(elementId, message) {
-            const el = document.getElementById(elementId);
-            el.textContent = message;
-            el.style.display = 'block';
-        }
+          <div class="divider">or continue with email</div>
 
-        // Password strength checker
-        function checkPasswordStrength(password) {
-            const bar = document.getElementById('strengthBar');
-            let strength = 0;
-            if (password.length >= 8) strength += 25;
-            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 25;
-            if (password.match(/[0-9]/)) strength += 25;
-            if (password.match(/[^a-zA-Z0-9]/)) strength += 25;
-            bar.style.width = strength + '%';
-            if (strength < 50) bar.style.background = '#ef4444';
-            else if (strength < 75) bar.style.background = '#f59e0b';
-            else bar.style.background = '#10b981';
-        }
+          <div class="field">
+            <label>Email address</label>
+            <input type="email" id="loginEmail" placeholder="you@company.com" autocomplete="email">
+          </div>
 
-        // Login handler
-        function handleLogin(e) {
-            e.preventDefault();
-            clearMessages();
-            
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const remember = document.getElementById('remember').checked;
+          <div class="field">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="Your password">
+          </div>
 
-            // Get stored users
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            
-            // Find user
-            const user = users.find(u => u.email === email && u.password === password);
-            
-            if (user) {
-                // Store current user session
-                const session = {
-                    email: user.email,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    company: user.company,
-                    role: user.role,
-                    loginTime: new Date().toISOString(),
-                    remember: remember
-                };
-                
-                localStorage.setItem('currentUser', JSON.stringify(session));
-                
-                showSuccess('loginSuccess', 'Login successful! Redirecting...');
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1000);
-            } else {
-                showError('loginError', 'Invalid email or password. Please try again.');
-            }
-        }
+          <div class="check-row">
+            <input type="checkbox" id="remember">
+            <label for="remember">Keep me signed in for 30 days</label>
+          </div>
 
-        // Signup handler
-        function handleSignup(e) {
-            e.preventDefault();
-            clearMessages();
-            
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
-            const email = document.getElementById('signupEmail').value;
-            const company = document.getElementById('company').value;
-            const role = document.getElementById('role').value;
-            const password = document.getElementById('signupPassword').value;
-            const confirmPassword = document.getElementById('signupConfirmPassword').value;
-            const terms = document.getElementById('terms').checked;
+          <button class="submit-btn" onclick="handleLogin()">
+            <span class="btn-text">Sign In →</span>
+            <div class="btn-spinner"></div>
+          </button>
 
-            // Validation
-            if (password !== confirmPassword) {
-                showError('signupError', 'Passwords do not match');
-                return;
-            }
+          <div class="forgot-link"><a href="#">Forgot your password?</a></div>
+        </div>
 
-            if (password.length < 8) {
-                showError('signupError', 'Password must be at least 8 characters long');
-                return;
-            }
+        <!-- Signup -->
+        <div id="signupPanel" class="form-panel">
+          <div class="alert error" id="signupErr"></div>
+          <div class="alert success" id="signupOk"></div>
 
-            if (!terms) {
-                showError('signupError', 'You must agree to the Terms of Service');
-                return;
-            }
+          
 
-            // Get existing users
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            
-            // Check if user already exists
-            if (users.find(u => u.email === email)) {
-                showError('signupError', 'An account with this email already exists');
-                return;
-            }
+          <div class="divider">or sign up with email</div>
 
-            // Add new user
-            users.push({
-                firstName,
-                lastName,
-                email,
-                company,
-                role,
-                password,
-                createdAt: new Date().toISOString()
-            });
+          <div class="form-row-grid">
+            <div class="field">
+              <label>First name</label>
+              <input type="text" id="firstName" placeholder="Jane">
+            </div>
+            <div class="field">
+              <label>Last name</label>
+              <input type="text" id="lastName" placeholder="Smith">
+            </div>
+          </div>
 
-            localStorage.setItem('users', JSON.stringify(users));
+          <div class="field">
+            <label>Work email</label>
+            <input type="email" id="signupEmail" placeholder="you@company.com">
+          </div>
 
-            // Auto login
-            const session = {
-                email,
-                firstName,
-                lastName,
-                company,
-                role,
-                loginTime: new Date().toISOString(),
-                remember: false
-            };
-            
-            localStorage.setItem('currentUser', JSON.stringify(session));
-            
-            showSuccess('signupSuccess', 'Account created successfully! Redirecting...');
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 1000);
-        }
+          <div class="field">
+            <label>Company name</label>
+            <input type="text" id="company" placeholder="Acme Inc.">
+          </div>
 
-        // Check if user is already logged in
-        window.addEventListener('load', () => {
-            const currentUser = localStorage.getItem('currentUser');
-            if (currentUser) {
-                const session = JSON.parse(currentUser);
-                const loginTime = new Date(session.loginTime);
-                const now = new Date();
-                const daysSinceLogin = (now - loginTime) / (1000 * 60 * 60 * 24);
+          <div class="field">
+            <label>Your role</label>
+            <select id="role">
+              <option value="">Select role…</option>
+              <option value="manager">Project Manager</option>
+              <option value="developer">Developer</option>
+              <option value="designer">Designer</option>
+              <option value="analyst">Business Analyst</option>
+              <option value="executive">Executive</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
 
-                // If remember me is checked or logged in within last day, redirect to dashboard
-                if (session.remember || daysSinceLogin < 1) {
-                    window.location.href = 'dashboard.html';
-                }
-            }
-        });
-    </script>
+          <div class="field">
+            <label>Password</label>
+            <input type="password" id="signupPassword" placeholder="Create a strong password" oninput="checkStrength(this.value)">
+            <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+            <div class="strength-label" id="strengthLabel"></div>
+          </div>
+
+          <div class="field">
+            <label>Confirm password</label>
+            <input type="password" id="confirmPassword" placeholder="Repeat your password">
+          </div>
+
+          <div class="check-row">
+            <input type="checkbox" id="terms">
+            <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+          </div>
+
+          <button class="submit-btn" onclick="handleSignup()">
+            <span class="btn-text">Create Account →</span>
+            <div class="btn-spinner"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="login.js"></script>
+
 </body>
 </html>
